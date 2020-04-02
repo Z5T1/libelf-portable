@@ -207,7 +207,7 @@ $(MANDIR)/man3:
 
 .PHONY: install-manpage-%
 install-manpage-%.3: %.3 $(MANDIR)/man3 
-	$(INSTALL) $< $(MANDIR)/man3/
+	$(INSTALL) -m 644 $< $(MANDIR)/man3/
 
 VERSION_MAP=           ${SRCDIR}/Version.map
 
