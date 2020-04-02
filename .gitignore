@@ -1,0 +1,6 @@
+*.pico
+*.so
+native-elf-format.h
+libelf_fsize.c
+libelf_msize.c
+libelf_convert.c
