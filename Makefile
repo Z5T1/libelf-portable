@@ -1,5 +1,9 @@
 # $FreeBSD$
 
+CC?=cc
+INSTALL?=install
+LNS?=ln -sf
+
 CFLAGS?=	-O2 -fpic -DPIC -g
 CFLAGS+=	-Iinclude
 CFLAGS+=	--std=gnu99
@@ -94,6 +98,18 @@ $(addsuffix .pico,$(GENSRC)): $(addsuffix .c,$(GENSRC))
 
 SRCDIR=	.
 INCS=	libelf.h gelf.h
+PREFIX?=/usr
+DESTDIR?=
+LIBDIR?=$(DESTDIR)$(PREFIX)/lib
+MANDIR?=$(DESTDIR)$(PREFIX)/share/man
+
+.PHONY: install install-lib install-man
+install: install-lib install-man
+	
+install-lib: $(SOFILE)
+	$(INSTALL) -dm 755 $(LIBDIR)
+	$(INSTALL) -m 755 $(SOFILE) $(LIBDIR)/
+	$(LNS) $(SOFILE) $(LIBDIR)/libelf.so
 
 MAN=	elf.3							\
 	elf_begin.3						\
@@ -183,6 +199,15 @@ MLINKS+= \
 	gelf_xlatetof.3	elf${E}_xlatetof.3	\
 	gelf_xlatetof.3	elf${E}_xlatetom.3
 #.endfor
+
+install-man: $(addprefix install-manpage-,$(MAN))
+
+$(MANDIR)/man3:
+	$(INSTALL) -dm 755 $@
+
+.PHONY: install-manpage-%
+install-manpage-%.3: %.3 $(MANDIR)/man3 
+	$(INSTALL) $< $(MANDIR)/man3/
 
 VERSION_MAP=           ${SRCDIR}/Version.map
 
