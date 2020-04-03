@@ -101,15 +101,25 @@ INCS=	libelf.h gelf.h
 PREFIX?=/usr
 DESTDIR?=
 LIBDIR?=$(DESTDIR)$(PREFIX)/lib
+INCDIR?=$(DESTDIR)$(PREFIX)/include
 MANDIR?=$(DESTDIR)$(PREFIX)/share/man
 
-.PHONY: install install-lib install-man
-install: install-lib install-man
+.PHONY: install install-lib install-header install-man
+install: install-lib install-header install-man
 	
 install-lib: $(SOFILE)
 	$(INSTALL) -dm 755 $(LIBDIR)
 	$(INSTALL) -m 755 $(SOFILE) $(LIBDIR)/
 	$(LNS) $(SOFILE) $(LIBDIR)/libelf.so
+
+install-header:
+	$(INSTALL) -dm 755 $(INCDIR)
+	$(INSTALL) -m 644 include/libelf.h $(INCDIR)/
+	$(INSTALL) -m 644 include/gelf.h $(INCDIR)/
+	$(INSTALL) -dm 755 $(INCDIR)/sys
+	$(INSTALL) -m 644 include/sys/elf_common.h $(INCDIR)/sys/
+	$(INSTALL) -m 644 include/sys/elf32.h $(INCDIR)/sys/
+	$(INSTALL) -m 644 include/sys/elf64.h $(INCDIR)/sys/
 
 MAN=	elf.3							\
 	elf_begin.3						\
